@@ -20,7 +20,7 @@
             <div id="grid-productos" class="grid-productos"></div>
         </section>
 
-        <!-- 2. PEDIDO ACTUAL -->
+        <!-- 2. PEDIDO ACTUAL Y DOMICILIOS -->
         <section class="panel">
             <h2>2. Pedido Actual</h2>
             <table class="tabla-pedido">
@@ -36,7 +36,28 @@
             </table>
 
             <div class="resumen-pedido">
+                <div class="campo">
+                    <label for="tipo-entrega">Tipo de Entrega:</label>
+                    <select id="tipo-entrega" onchange="toggleDomicilio()">
+                        <option value="Local">Consumo en Local / Llevar</option>
+                        <option value="Domicilio">Domicilio</option>
+                    </select>
+                </div>
+
+                <!-- SECCIÓN DE DATOS DE DOMICILIO (OCULTA POR DEFECTO) -->
+                <div id="seccion-domicilio" class="campos-domicilio" style="display: none;">
+                    <div class="campo">
+                        <label for="direccion-domicilio">Dirección de entrega:</label>
+                        <input type="text" id="direccion-domicilio" placeholder="Ej: Calle 10 #12-34">
+                    </div>
+                    <div class="campo">
+                        <label for="costo-domicilio">Costo de Envío ($):</label>
+                        <input type="number" id="costo-domicilio" value="3000" min="0" oninput="actualizarVistaPedido()">
+                    </div>
+                </div>
+
                 <h3>Total: $<span id="total-pedido">0</span></h3>
+
                 <div class="campo">
                     <label for="metodo-pago">Método de Pago:</label>
                     <select id="metodo-pago">
@@ -45,6 +66,7 @@
                         <option value="Tarjeta">Tarjeta Débito/Crédito</option>
                     </select>
                 </div>
+                
                 <button type="button" class="btn-confirmar" onclick="finalizarVenta()">Cobrar y Generar Factura</button>
             </div>
         </section>
@@ -60,9 +82,9 @@
                 <thead>
                     <tr>
                         <th># Factura</th>
-                        <th>Fecha</th>
-                        <th>Método</th>
+                        <th>Tipo</th>
                         <th>Total</th>
+                        <th>Detalle</th>
                     </tr>
                 </thead>
                 <tbody id="tabla-facturas"></tbody>

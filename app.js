@@ -62,17 +62,29 @@ function agregarAlPedido(idProducto) {
     actualizarVistaPedido();
 }
 
+function toggleDomicilio() {
+    const tipoEntrega = document.getElementById("tipo-entrega").value;
+    const seccionDomicilio = document.getElementById("seccion-domicilio");
+    
+    if (tipoEntrega === "Domicilio") {
+        seccionDomicilio.style.display = "block";
+    } else {
+        seccionDomicilio.style.display = "none";
+    }
+    actualizarVistaPedido();
+}
+
 function actualizarVistaPedido() {
     const tbody = document.getElementById("lista-pedido");
     const totalSpan = document.getElementById("total-pedido");
     if (!tbody || !totalSpan) return;
 
     tbody.innerHTML = "";
-    let total = 0;
+    let subtotalProductos = 0;
 
     pedidoActual.forEach((item, index) => {
         const subtotal = item.precio * item.cantidad;
-        total += subtotal;
+        subtotalProductos += subtotal;
 
         const fila = document.createElement("tr");
         fila.innerHTML = `
@@ -86,7 +98,16 @@ function actualizarVistaPedido() {
         tbody.appendChild(fila);
     });
 
-    totalSpan.textContent = total.toLocaleString();
+    // Calcular recargo de domicilio si aplica
+    let costoDomicilio = 0;
+    const tipoEntrega = document.getElementById("tipo-entrega").value;
+    if (tipoEntrega === "Domicilio") {
+        const inputCosto = document.getElementById("costo-domicilio");
+        costoDomicilio = parseFloat(inputCosto.value) || 0;
+    }
+
+    const totalFinal = subtotalProductos + costoDomicilio;
+    totalSpan.textContent = totalFinal.toLocaleString();
 }
 
 function quitarDelPedido(index) {
@@ -100,12 +121,29 @@ function finalizarVenta() {
         return;
     }
 
+    const tipoEntrega = document.getElementById("tipo-entrega").value;
     const metodoPago = document.getElementById("metodo-pago").value;
-    const totalVenta = pedidoActual.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+    let direccion = "";
+    let costoEnvio = 0;
+
+    if (tipoEntrega === "Domicilio") {
+        direccion = document.getElementById("direccion-domicilio").value.trim();
+        costoEnvio = parseFloat(document.getElementById("costo-domicilio").value) || 0;
+
+        if (!direccion) {
+            alert("Por favor ingrese la dirección para el domicilio.");
+            return;
+        }
+    }
+
+    const totalProductos = pedidoActual.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
+    const totalVenta = totalProductos + costoEnvio;
 
     const nuevaFactura = {
         id: Date.now(),
         fecha: new Date().toLocaleString(),
+        tipoEntrega: tipoEntrega,
+        direccion: direccion,
         metodoPago: metodoPago,
         total: totalVenta
     };
@@ -113,7 +151,11 @@ function finalizarVenta() {
     historialFacturas.push(nuevaFactura);
     localStorage.setItem("historialFacturas", JSON.stringify(historialFacturas));
 
+    // Reiniciar campos del pedido
     pedidoActual = [];
+    document.getElementById("direccion-domicilio").value = "";
+    document.getElementById("tipo-entrega").value = "Local";
+    toggleDomicilio();
     actualizarVistaPedido();
     cargarHistorial();
 
@@ -132,12 +174,16 @@ function cargarHistorial() {
     }
 
     historialFacturas.forEach((factura) => {
+        const detalle = factura.tipoEntrega === "Domicilio" 
+            ? `${factura.metodoPago} (${factura.direccion})` 
+            : factura.metodoPago;
+
         const fila = document.createElement("tr");
         fila.innerHTML = `
             <td>#${factura.id.toString().slice(-4)}</td>
-            <td>${factura.fecha}</td>
-            <td>${factura.metodoPago}</td>
+            <td>${factura.tipoEntrega}</td>
             <td>$${factura.total.toLocaleString()}</td>
+            <td><small>${detalle}</small></td>
         `;
         tabla.appendChild(fila);
     });

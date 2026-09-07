@@ -121,10 +121,18 @@ th {
     color: #475569;
 }
 
-/* FORMULARIOS */
+/* FORMULARIOS Y DOMICILIO */
 .campo {
     display: flex;
     flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.campos-domicilio {
+    background-color: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    padding: 10px;
+    border-radius: 6px;
     margin-bottom: 12px;
 }
 
