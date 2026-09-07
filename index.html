@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto de Venta - Pedidos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Sistema de Pedidos - Comidas Rápidas</h1>
+    </header>
+
+    <main class="contenedor-principal">
+        <!-- SECCIÓN 1: MENÚ PARA PEDIR -->
+        <section class="panel">
+            <h2>1. Seleccionar Productos</h2>
+            <div id="grid-productos" class="grid-botones"></div>
+        </section>
+
+        <!-- SECCIÓN 2: DETALLE DEL PEDIDO Y TOTAL -->
+        <section class="panel">
+            <h2>2. Pedido Actual</h2>
+            <ul id="lista-pedido"></ul>
+            <hr>
+            <h3>Total: $<span id="total-pagar">0</span></h3>
+            <button class="btn-confirmar" onclick="confirmarPedido()">Confirmar y Vender</button>
+            <button class="btn-cancelar" onclick="limpiarPedido()">Limpiar Todo</button>
+        </section>
+
+        <!-- SECCIÓN 3: CONTROL DE DISPONIBILIDAD DE HOY -->
+        <section class="panel">
+            <h2>3. Control de Disponibilidad (Inventario)</h2>
+            <div id="lista-admin"></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
