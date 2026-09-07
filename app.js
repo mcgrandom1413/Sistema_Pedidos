@@ -15,35 +15,55 @@ document.addEventListener("DOMContentLoaded", () => {
     cargarHistorial();
 });
 
+// 1. CARGAR MENÚ DE PRODUCTOS (CON BOTÓN DE ELIMINAR)
 function cargarMenu() {
     const contenedor = document.getElementById("grid-productos");
     if (!contenedor) return;
 
     contenedor.innerHTML = "";
 
+    if (productos.length === 0) {
+        contenedor.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #64748b;">No hay productos en el menú.</p>`;
+        return;
+    }
+
     productos.forEach(prod => {
         if (prod.disponible) {
-            const btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "tarjeta-producto";
-            btn.onclick = () => agregarAlPedido(prod.id);
+            const tarjeta = document.createElement("div");
+            tarjeta.className = "tarjeta-producto";
 
             let contenidoImagen = prod.imagen && prod.imagen.trim() !== "" 
                 ? `<img src="${prod.imagen}" alt="${prod.nombre}" onerror="this.style.display='none'">` 
                 : "";
 
-            btn.innerHTML = `
-                ${contenidoImagen}
-                <div class="info-producto">
-                    <strong>${prod.nombre}</strong>
-                    <span>$${prod.precio.toLocaleString()}</span>
+            tarjeta.innerHTML = `
+                <button type="button" class="btn-borrar-prod" onclick="eliminarProductoDelMenu(${prod.id})" title="Eliminar producto del menú">×</button>
+                <div class="contenido-tarjeta" onclick="agregarAlPedido(${prod.id})">
+                    ${contenidoImagen}
+                    <div class="info-producto">
+                        <strong>${prod.nombre}</strong>
+                        <span>$${prod.precio.toLocaleString()}</span>
+                    </div>
                 </div>
             `;
-            contenedor.appendChild(btn);
+            contenedor.appendChild(tarjeta);
         }
     });
 }
 
+// NUEVA FUNCIÓN: ELIMINAR PRODUCTO DEL MENÚ
+function eliminarProductoDelMenu(idProducto) {
+    const prod = productos.find(p => p.id === idProducto);
+    if (!prod) return;
+
+    if (confirm(`¿Estás seguro de que deseas eliminar "${prod.nombre}" del menú?`)) {
+        productos = productos.filter(p => p.id !== idProducto);
+        localStorage.setItem("inventario", JSON.stringify(productos));
+        cargarMenu();
+    }
+}
+
+// 2. AGREGAR PRODUCTO AL PEDIDO
 function agregarAlPedido(idProducto) {
     const producto = productos.find(p => p.id === idProducto);
     if (!producto) return;
@@ -62,6 +82,7 @@ function agregarAlPedido(idProducto) {
     actualizarVistaPedido();
 }
 
+// 3. MOSTRAR / OCULTAR CAMPOS DE DOMICILIO
 function toggleDomicilio() {
     const tipoEntrega = document.getElementById("tipo-entrega").value;
     const seccionDomicilio = document.getElementById("seccion-domicilio");
@@ -74,6 +95,7 @@ function toggleDomicilio() {
     actualizarVistaPedido();
 }
 
+// 4. ACTUALIZAR VISTA DEL PEDIDO
 function actualizarVistaPedido() {
     const tbody = document.getElementById("lista-pedido");
     const totalSpan = document.getElementById("total-pedido");
@@ -114,6 +136,7 @@ function quitarDelPedido(index) {
     actualizarVistaPedido();
 }
 
+// 5. FINALIZAR VENTA
 function finalizarVenta() {
     if (pedidoActual.length === 0) {
         alert("El pedido está vacío.");
@@ -160,6 +183,7 @@ function finalizarVenta() {
     alert("¡Venta registrada con éxito!");
 }
 
+// 6. CARGAR HISTORIAL DE FACTURAS
 function cargarHistorial() {
     const tabla = document.getElementById("tabla-facturas");
     if (!tabla) return;
@@ -187,6 +211,7 @@ function cargarHistorial() {
     });
 }
 
+// 7. BORRAR FACTURAS
 function borrarFacturas() {
     if (historialFacturas.length === 0) {
         alert("No hay facturas para borrar.");
@@ -201,6 +226,7 @@ function borrarFacturas() {
     }
 }
 
+// 8. CREAR NUEVO PRODUCTO
 function crearProducto(event) {
     event.preventDefault();
 
@@ -210,7 +236,6 @@ function crearProducto(event) {
 
     const precio = parseFloat(precioInput.value);
 
-    // Validación estricta del rango $5.000 - $15.000
     if (precio < 5000 || precio > 15000) {
         alert("El precio debe estar entre $5,000 y $15,000 pesos.");
         return;

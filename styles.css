@@ -1,70 +1,24 @@
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-    background-color: #f4f6f8;
-    color: #333;
-    padding: 20px;
-}
-
-header {
-    text-align: center;
-    margin-bottom: 25px;
-    background-color: #1e293b;
-    color: #ffffff;
-    padding: 15px;
-    border-radius: 8px;
-}
-
-.contenedor-principal {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-}
-
-.panel {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.panel h2 {
-    margin-bottom: 15px;
-    font-size: 18px;
-    color: #1e293b;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 8px;
-}
-
-.cabecera-seccion {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.cabecera-seccion h2 {
-    margin-bottom: 0;
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
+/* MENÚ Y TARJETAS DE PRODUCTO CON OPCIÓN DE BORRAR */
 .grid-productos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
 }
 
 .tarjeta-producto {
+    position: relative;
     background: #007bff;
     color: white;
-    border: none;
     border-radius: 6px;
+    overflow: hidden;
+    transition: transform 0.1s ease;
+}
+
+.tarjeta-producto:hover {
+    background-color: #0056b3;
+}
+
+.contenido-tarjeta {
     padding: 12px 8px;
     cursor: pointer;
     display: flex;
@@ -75,8 +29,28 @@ header {
     width: 100%;
 }
 
-.tarjeta-producto:hover {
-    background-color: #0056b3;
+.btn-borrar-prod {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-borrar-prod:hover {
+    background-color: #bd2130;
 }
 
 .tarjeta-producto img {
@@ -99,94 +73,4 @@ header {
 
 .info-producto span {
     font-size: 12px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
-}
-
-th, td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 14px;
-}
-
-th {
-    background-color: #f1f5f9;
-    color: #475569;
-}
-
-.campo {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 12px;
-}
-
-.campos-domicilio {
-    background-color: #f8fafc;
-    border: 1px dashed #cbd5e1;
-    padding: 10px;
-    border-radius: 6px;
-    margin-bottom: 12px;
-}
-
-.campo label {
-    font-size: 13px;
-    margin-bottom: 5px;
-    color: #475569;
-}
-
-.campo input, .campo select {
-    padding: 8px;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.btn-confirmar {
-    width: 100%;
-    padding: 10px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.btn-confirmar:hover {
-    background-color: #218838;
-}
-
-.btn-eliminar {
-    padding: 6px 12px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.btn-eliminar:hover {
-    background-color: #c82333;
-}
-
-.btn-quitar {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 2px 6px;
-    border-radius: 3px;
-    cursor: pointer;
-}
-
-.resumen-pedido {
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
 }
