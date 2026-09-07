@@ -1,4 +1,4 @@
-// Catálogo inicial
+// Catálogo inicial predeterminado
 const productosIniciales = [
     { id: 1, nombre: "Hamburguesa", precio: 15000, disponible: true },
     { id: 2, nombre: "Perro Caliente", precio: 12000, disponible: true },
@@ -6,7 +6,7 @@ const productosIniciales = [
     { id: 4, nombre: "Gaseosa", precio: 4000, disponible: true }
 ];
 
-// Cargar estado guardado o usar el inicial
+// Cargar catálogo guardado en el navegador o usar el inicial
 let productos = JSON.parse(localStorage.getItem("inventario")) || productosIniciales;
 let pedidoActual = [];
 
@@ -14,7 +14,7 @@ function guardarInventario() {
     localStorage.setItem("inventario", JSON.stringify(productos));
 }
 
-// Generar botones del menú
+// 1. Mostrar menú de compras
 function cargarMenu() {
     const contenedor = document.getElementById("grid-productos");
     contenedor.innerHTML = "";
@@ -62,7 +62,7 @@ function confirmarPedido() {
     limpiarPedido();
 }
 
-// Panel de control para marcar qué NO hay en el día
+// 2. Control de Disponibilidad (Checkboxes)
 function cargarAdmin() {
     const contenedorAdmin = document.getElementById("lista-admin");
     contenedorAdmin.innerHTML = "";
@@ -71,7 +71,7 @@ function cargarAdmin() {
         const div = document.createElement("div");
         div.className = "item-admin";
         div.innerHTML = `
-            <span>${prod.nombre}</span>
+            <span><strong>${prod.nombre}</strong> ($${prod.precio})</span>
             <label>
                 <input type="checkbox" ${prod.disponible ? "checked" : ""} onchange="cambiarEstado(${prod.id})">
                 Disponible
@@ -87,6 +87,32 @@ function cambiarEstado(id) {
     cargarMenu();
 }
 
-// Inicializar la interfaz
+// 3. Crear Nuevos Productos desde la Web
+function crearProducto(event) {
+    event.preventDefault();
+
+    const nombreInput = document.getElementById("nombre");
+    const precioInput = document.getElementById("precio");
+
+    const nuevoProducto = {
+        id: Date.now(),
+        nombre: nombreInput.value.trim(),
+        precio: parseFloat(precioInput.value),
+        disponible: true
+    };
+
+    productos.push(nuevoProducto);
+    guardarInventario();
+
+    cargarMenu();
+    cargarAdmin();
+
+    nombreInput.value = "";
+    precioInput.value = "";
+
+    alert("¡Producto agregado con éxito!");
+}
+
+// Inicializar la aplicación
 cargarMenu();
 cargarAdmin();

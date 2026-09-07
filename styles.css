@@ -5,7 +5,10 @@ body {
     padding: 20px;
 }
 
-h1 { text-align: center; color: #333; }
+h1 {
+    text-align: center;
+    color: #333;
+}
 
 .contenedor-principal {
     display: flex;
@@ -38,17 +41,24 @@ h1 { text-align: center; color: #333; }
     font-weight: bold;
 }
 
-.btn-producto:hover { background-color: #0056b3; }
+.btn-producto:hover {
+    background-color: #0056b3;
+}
 
 .btn-confirmar {
     background-color: #28a745;
     color: white;
     padding: 10px;
     border: none;
+    border-radius: 4px;
     width: 100%;
     margin-top: 10px;
     cursor: pointer;
     font-weight: bold;
+}
+
+.btn-confirmar:hover {
+    background-color: #218838;
 }
 
 .btn-cancelar {
@@ -56,15 +66,35 @@ h1 { text-align: center; color: #333; }
     color: white;
     padding: 10px;
     border: none;
+    border-radius: 4px;
     width: 100%;
     margin-top: 5px;
     cursor: pointer;
 }
 
+.btn-cancelar:hover {
+    background-color: #c82333;
+}
+
 .item-admin {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 8px;
     padding: 5px 0;
     border-bottom: 1px solid #eee;
+}
+
+.campo {
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.campo input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
 }
