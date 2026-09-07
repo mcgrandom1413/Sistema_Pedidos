@@ -1,4 +1,4 @@
-// Catálogo inicial predeterminado
+// Catálogo predeterminado inicial
 const productosIniciales = [
     { id: 1, nombre: "Hamburguesa", precio: 15000, disponible: true },
     { id: 2, nombre: "Perro Caliente", precio: 12000, disponible: true },
@@ -6,15 +6,19 @@ const productosIniciales = [
     { id: 4, nombre: "Gaseosa", precio: 4000, disponible: true }
 ];
 
-// Cargar catálogo guardado en el navegador o usar el inicial
 let productos = JSON.parse(localStorage.getItem("inventario")) || productosIniciales;
+let facturas = JSON.parse(localStorage.getItem("historial_facturas")) || [];
 let pedidoActual = [];
 
 function guardarInventario() {
     localStorage.setItem("inventario", JSON.stringify(productos));
 }
 
-// 1. Mostrar menú de compras
+function guardarFacturas() {
+    localStorage.setItem("historial_facturas", JSON.stringify(facturas));
+}
+
+// 1. Mostrar menú
 function cargarMenu() {
     const contenedor = document.getElementById("grid-productos");
     contenedor.innerHTML = "";
@@ -37,32 +41,60 @@ function agregarAlPedido(prod) {
 
 function actualizarVistaPedido() {
     const lista = document.getElementById("lista-pedido");
+    const subtotalSpan = document.getElementById("subtotal-pagar");
+    const domicilioSpan = document.getElementById("valor-domicilio");
     const totalSpan = document.getElementById("total-pagar");
+    const costoDomicilio = parseFloat(document.getElementById("costo-domicilio").value) || 0;
+
     lista.innerHTML = "";
 
-    let total = 0;
+    let subtotal = 0;
     pedidoActual.forEach((item) => {
-        total += item.precio;
+        subtotal += item.precio;
         const li = document.createElement("li");
         li.innerText = `${item.nombre} - $${item.precio}`;
         lista.appendChild(li);
     });
 
+    const total = subtotal + costoDomicilio;
+
+    subtotalSpan.innerText = subtotal;
+    domicilioSpan.innerText = costoDomicilio;
     totalSpan.innerText = total;
 }
 
 function limpiarPedido() {
     pedidoActual = [];
+    document.getElementById("costo-domicilio").value = "0";
     actualizarVistaPedido();
 }
 
+// 2. Confirmar y guardar la factura (Guarda fecha para controlar tiempo)
 function confirmarPedido() {
     if (pedidoActual.length === 0) return alert("El pedido está vacío.");
-    alert("¡Pedido realizado con éxito!");
+
+    const costoDomicilio = parseFloat(document.getElementById("costo-domicilio").value) || 0;
+    let subtotal = 0;
+    pedidoActual.forEach(item => subtotal += item.precio);
+
+    const nuevaFactura = {
+        id: "FAC-" + Date.now().toString().slice(-5),
+        fecha: new Date().toISOString(),
+        items: [...pedidoActual],
+        subtotal: subtotal,
+        domicilio: costoDomicilio,
+        total: subtotal + costoDomicilio
+    };
+
+    facturas.unshift(nuevaFactura); // Agregar al inicio
+    guardarFacturas();
+    cargarFacturas();
+
+    alert(`¡Factura ${nuevaFactura.id} registrada con éxito!`);
     limpiarPedido();
 }
 
-// 2. Control de Disponibilidad (Checkboxes)
+// 3. Panel de administración y eliminación de comidas
 function cargarAdmin() {
     const contenedorAdmin = document.getElementById("lista-admin");
     contenedorAdmin.innerHTML = "";
@@ -72,10 +104,13 @@ function cargarAdmin() {
         div.className = "item-admin";
         div.innerHTML = `
             <span><strong>${prod.nombre}</strong> ($${prod.precio})</span>
-            <label>
-                <input type="checkbox" ${prod.disponible ? "checked" : ""} onchange="cambiarEstado(${prod.id})">
-                Disponible
-            </label>
+            <div>
+                <label>
+                    <input type="checkbox" ${prod.disponible ? "checked" : ""} onchange="cambiarEstado(${prod.id})">
+                    Disponible
+                </label>
+                <button class="btn-eliminar-sm" onclick="eliminarProducto(${prod.id})">🗑️ Borrar</button>
+            </div>
         `;
         contenedorAdmin.appendChild(div);
     });
@@ -87,7 +122,16 @@ function cambiarEstado(id) {
     cargarMenu();
 }
 
-// 3. Crear Nuevos Productos desde la Web
+function eliminarProducto(id) {
+    if (confirm("¿Estás seguro de que deseas eliminar este producto definitivamente?")) {
+        productos = productos.filter(p => p.id !== id);
+        guardarInventario();
+        cargarMenu();
+        cargarAdmin();
+    }
+}
+
+// 4. Crear producto
 function crearProducto(event) {
     event.preventDefault();
 
@@ -109,10 +153,47 @@ function crearProducto(event) {
 
     nombreInput.value = "";
     precioInput.value = "";
-
-    alert("¡Producto agregado con éxito!");
 }
 
-// Inicializar la aplicación
+// 5. Visualizar historial de facturas
+function cargarFacturas() {
+    const contenedorFacturas = document.getElementById("historial-facturas");
+    contenedorFacturas.innerHTML = "";
+
+    facturas.forEach(f => {
+        const fechaFormateada = new Date(f.fecha).toLocaleString();
+        const card = document.createElement("div");
+        card.className = "factura-card";
+
+        let listaHTML = "<ul>";
+        f.items.forEach(item => {
+            listaHTML += `<li>• ${item.nombre}: $${item.precio}</li>`;
+        });
+        listaHTML += "</ul>";
+
+        card.innerHTML = `
+            <h4>${f.id}</h4>
+            <small>${fechaFormateada}</small>
+            ${listaHTML}
+            <hr>
+            <p>Subtotal: $${f.subtotal}</p>
+            <p>Domicilio: $${f.domicilio}</p>
+            <strong>TOTAL: $${f.total}</strong>
+        `;
+        contenedorFacturas.appendChild(card);
+    });
+}
+
+// Limpiar automático de facturas de más de 30 días
+function limpiarFacturasExpiradas() {
+    const limite30Dias = Date.now() - (30 * 24 * 60 * 60 * 1000);
+    facturas = facturas.filter(f => new Date(f.fecha).getTime() > limite30Dias);
+    guardarFacturas();
+    cargarFacturas();
+    alert("Se han limpiado las facturas con más de 30 días de antigüedad.");
+}
+
+// Inicialización
 cargarMenu();
 cargarAdmin();
+cargarFacturas();

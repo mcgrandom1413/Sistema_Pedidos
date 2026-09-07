@@ -18,19 +18,43 @@
             <div id="grid-productos" class="grid-botones"></div>
         </section>
 
-        <!-- SECCIÓN 2: DETALLE DEL PEDIDO Y TOTAL -->
+        <!-- SECCIÓN 2: DETALLE DEL PEDIDO Y FACTURA -->
         <section class="panel">
             <h2>2. Pedido Actual</h2>
             <ul id="lista-pedido"></ul>
+            
+            <div class="campo-domicilio">
+                <label for="costo-domicilio">Coste de Domicilio:</label>
+                <select id="costo-domicilio" onchange="actualizarVistaPedido()">
+                    <option value="0">Sin Domicilio ($0)</option>
+                    <option value="5000">$5.000</option>
+                    <option value="6000">$6.000</option>
+                    <option value="7000">$7.000</option>
+                    <option value="8000">$8.000</option>
+                    <option value="9000">$9.000</option>
+                    <option value="10000">$10.000</option>
+                    <option value="11000">$11.000</option>
+                    <option value="12000">$12.000</option>
+                    <option value="13000">$13.000</option>
+                    <option value="14000">$14.000</option>
+                    <option value="15000">$15.000</option>
+                </select>
+            </div>
+
             <hr>
-            <h3>Total: $<span id="total-pagar">0</span></h3>
-            <button class="btn-confirmar" onclick="confirmarPedido()">Confirmar y Vender</button>
-            <button class="btn-cancelar" onclick="limpiarPedido()">Limpiar Todo</button>
+            <div class="resumen-totales">
+                <p>Subtotal: $<span id="subtotal-pagar">0</span></p>
+                <p>Domicilio: $<span id="valor-domicilio">0</span></p>
+                <h3>Total a Pagar: $<span id="total-pagar">0</span></h3>
+            </div>
+            
+            <button class="btn-confirmar" onclick="confirmarPedido()">Generar y Guardar Factura</button>
+            <button class="btn-cancelar" onclick="limpiarPedido()">Limpiar Pedido</button>
         </section>
 
-        <!-- SECCIÓN 3: CONTROL DE DISPONIBILIDAD (INVENTARIO) -->
+        <!-- SECCIÓN 3: CONTROL DE INVENTARIO Y ELIMINACIÓN -->
         <section class="panel">
-            <h2>3. Control de Disponibilidad</h2>
+            <h2>3. Control de Disponibilidad / Eliminar</h2>
             <div id="lista-admin"></div>
         </section>
 
@@ -48,6 +72,13 @@
                 </div>
                 <button type="submit" class="btn-confirmar">Guardar Producto</button>
             </form>
+        </section>
+
+        <!-- SECCIÓN 5: HISTORIAL DE FACTURAS GUARDADAS -->
+        <section class="panel ancho-completo">
+            <h2>5. Historial de Facturas (Guardadas por 30 Días)</h2>
+            <button class="btn-cancelar btn-pila" onclick="limpiarFacturasExpiradas()">Limpiar Viejas</button>
+            <div id="historial-facturas" class="grid-facturas"></div>
         </section>
     </main>
 

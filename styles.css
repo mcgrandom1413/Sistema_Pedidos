@@ -25,6 +25,10 @@ h1 {
     min-width: 280px;
 }
 
+.ancho-completo {
+    flex: 100%;
+}
+
 .grid-botones {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -76,6 +80,16 @@ h1 {
     background-color: #c82333;
 }
 
+.btn-eliminar-sm {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 7px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
 .item-admin {
     display: flex;
     justify-content: space-between;
@@ -85,16 +99,61 @@ h1 {
     border-bottom: 1px solid #eee;
 }
 
-.campo {
+.campo, .campo-domicilio {
     margin-bottom: 12px;
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
-.campo input {
+.campo input, .campo-domicilio select {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+}
+
+/* FORMATO ESTILO FACTURA */
+.grid-facturas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.factura-card {
+    background: #fff;
+    border: 1px dashed #777;
+    padding: 15px;
+    font-family: 'Courier New', Courier, monospace;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+}
+
+.factura-card h4 {
+    margin: 0 0 10px 0;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.factura-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+}
+
+.factura-card li {
+    font-size: 13px;
+    margin-bottom: 3px;
+}
+
+.resumen-totales p {
+    margin: 3px 0;
+    font-size: 14px;
+}
+
+.btn-pila {
+    width: auto;
+    display: inline-block;
+    padding: 5px 10px;
 }
