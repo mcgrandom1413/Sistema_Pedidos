@@ -11,105 +11,127 @@
     <div class="contenedor-principal">
         <h1>Mi Negocio - Comidas Rápidas</h1>
 
-        <!-- 1. MENÚ DE PRODUCTOS -->
-        <section class="seccion">
-            <h2>1. Menú de Productos</h2>
-            <div id="grid-productos" class="grid-productos"></div>
-        </section>
+        <div class="dislayout-dos-columnas">
+            <!-- COLUMNA IZQUIERDA: MENÚ Y FACTURACIÓN -->
+            <div class="columna-principal">
+                <!-- 1. MENÚ DE PRODUCTOS -->
+                <section class="seccion">
+                    <h2>1. Menú de Productos</h2>
+                    <div id="grid-productos" class="grid-productos"></div>
+                </section>
 
-        <!-- 2. PEDIDO ACTUAL -->
-        <section class="seccion">
-            <h2>2. Pedido Actual</h2>
-            <div class="tabla-contenedor">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cant.</th>
-                            <th>Precio</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-pedido"></tbody>
-                </table>
-            </div>
-
-            <div class="controles-pedido">
-                <div class="campo-grupo">
-                    <label for="tipo-entrega">Tipo de Entrega:</label>
-                    <select id="tipo-entrega" onchange="toggleDomicilio()">
-                        <option value="Local">Consumo en Local / Llevar</option>
-                        <option value="Domicilio">Domicilio</option>
-                    </select>
-                </div>
-
-                <div id="seccion-domicilio" style="display: none;">
-                    <div class="campo-grupo">
-                        <label for="direccion-domicilio">Dirección de Envío:</label>
-                        <input type="text" id="direccion-domicilio" placeholder="Ej: Calle 10 #20-30">
+                <!-- 2. PEDIDO ACTUAL -->
+                <section class="seccion">
+                    <h2>2. Pedido Actual</h2>
+                    
+                    <div class="campo-grupo" style="margin-bottom: 12px;">
+                        <label for="nombre-cliente">Nombre del Cliente:</label>
+                        <input type="text" id="nombre-cliente" placeholder="Ej: Juan Pérez">
                     </div>
-                    <div class="campo-grupo">
-                        <label for="costo-domicilio">Costo de Domicilio ($):</label>
-                        <input type="number" id="costo-domicilio" value="3000" oninput="actualizarVistaPedido()">
+
+                    <div class="tabla-contenedor">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cant.</th>
+                                    <th>Precio</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lista-pedido"></tbody>
+                        </table>
                     </div>
-                </div>
 
-                <div class="total-destacado">
-                    Total: $<span id="total-pedido">0</span>
-                </div>
+                    <div class="controles-pedido">
+                        <div class="campo-grupo">
+                            <label for="tipo-entrega">Tipo de Entrega:</label>
+                            <select id="tipo-entrega" onchange="toggleDomicilio()">
+                                <option value="Local">Consumo en Local / Llevar</option>
+                                <option value="Domicilio">Domicilio</option>
+                            </select>
+                        </div>
 
-                <div class="campo-grupo">
-                    <label for="metodo-pago">Método de Pago:</label>
-                    <select id="metodo-pago">
-                        <option value="Efectivo">Efectivo</option>
-                        <option value="Nequi">Nequi</option>
-                        <option value="Bancolombia">Bancolombia</option>
-                        <option value="Tarjeta">Tarjeta Débito/Crédito</option>
-                    </select>
-                </div>
+                        <div id="seccion-domicilio" style="display: none;">
+                            <div class="campo-grupo">
+                                <label for="direccion-domicilio">Dirección de Envío:</label>
+                                <input type="text" id="direccion-domicilio" placeholder="Ej: Calle 10 #20-30">
+                            </div>
+                            <div class="campo-grupo">
+                                <label for="costo-domicilio">Costo de Domicilio ($):</label>
+                                <input type="number" id="costo-domicilio" value="3000" oninput="actualizarVistaPedido()">
+                            </div>
+                        </div>
 
-                <button type="button" class="btn-primario" onclick="finalizarVenta()">Cobrar y Generar Factura</button>
+                        <div class="total-destacado">
+                            Total: $<span id="total-pedido">0</span>
+                        </div>
+
+                        <div class="campo-grupo">
+                            <label for="metodo-pago">Método de Pago:</label>
+                            <select id="metodo-pago">
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Nequi">Nequi</option>
+                                <option value="Bancolombia">Bancolombia</option>
+                                <option value="Tarjeta">Tarjeta Débito/Crédito</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn-primario" onclick="finalizarVenta()">Cobrar y Generar Factura</button>
+                    </div>
+                </section>
+
+                <!-- 3. AGREGAR NUEVO PRODUCTO -->
+                <section class="seccion">
+                    <h2>3. Agregar Nuevo Producto</h2>
+                    <form onsubmit="crearProducto(event)" class="formulario-producto">
+                        <div class="campo-grupo">
+                            <label for="nombre">Nombre del producto:</label>
+                            <input type="text" id="nombre" placeholder="Ej: Salchipapa" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label for="precio">Precio ($5.000 - $15.000):</label>
+                            <input type="number" id="precio" placeholder="Ej: 15000" required>
+                        </div>
+                        <div class="campo-grupo">
+                            <label for="imagen">URL de la imagen (Opcional):</label>
+                            <input type="url" id="imagen" placeholder="https://ejemplo.com/imagen.jpg">
+                        </div>
+                        <button type="submit" class="btn-exito">Guardar Producto</button>
+                    </form>
+                </section>
             </div>
-        </section>
 
-        <!-- 3. HISTORIAL DE FACTURAS -->
-        <section class="seccion">
-            <h2>3. Historial de Facturas</h2>
-            <button type="button" class="btn-peligro" onclick="borrarFacturas()">Borrar Facturas</button>
-            <div class="tabla-contenedor">
-                <table>
-                    <thead>
-                        <tr>
-                            <th># Factura</th>
-                            <th>Tipo</th>
-                            <th>Total</th>
-                            <th>Detalle</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-facturas"></tbody>
-                </table>
+            <!-- COLUMNA DERECHA: HISTORIAL Y DETALLE DE FACTURA -->
+            <div class="columna-lateral">
+                <!-- HISTORIAL DE FACTURAS -->
+                <section class="seccion">
+                    <h2>Historial de Facturas</h2>
+                    <button type="button" class="btn-peligro" onclick="borrarFacturas()">Borrar Historial</button>
+                    <div class="tabla-contenedor">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Cliente</th>
+                                    <th>Total</th>
+                                    <th>Ver</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-facturas"></tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- VISTA PREVIA / DETALLE DE FACTURA SELECCIONADA -->
+                <section class="seccion ticket-factura" id="panel-detalle-factura">
+                    <h2>Detalle de Factura</h2>
+                    <div id="contenido-factura-detalle" class="detalle-vacio">
+                        <p>Selecciona una factura de la lista para ver el desglose completo del pedido.</p>
+                    </div>
+                </section>
             </div>
-        </section>
-
-        <!-- 4. AGREGAR NUEVO PRODUCTO -->
-        <section class="seccion">
-            <h2>4. Agregar Nuevo Producto</h2>
-            <form onsubmit="crearProducto(event)" class="formulario-producto">
-                <div class="campo-grupo">
-                    <label for="nombre">Nombre del producto:</label>
-                    <input type="text" id="nombre" placeholder="Ej: Salchipapa" required>
-                </div>
-                <div class="campo-grupo">
-                    <label for="precio">Precio ($5.000 - $15.000):</label>
-                    <input type="number" id="precio" placeholder="Ej: 15000" required>
-                </div>
-                <div class="campo-grupo">
-                    <label for="imagen">URL de la imagen (Opcional):</label>
-                    <input type="url" id="imagen" placeholder="https://ejemplo.com/imagen.jpg">
-                </div>
-                <button type="submit" class="btn-exito">Guardar Producto</button>
-            </form>
-        </section>
+        </div>
     </div>
 
     <script src="app.js"></script>
