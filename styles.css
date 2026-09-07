@@ -1,159 +1,190 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+* {
+    box-sizing: border-box;
     margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f4f6f8;
+    color: #333;
     padding: 20px;
 }
 
-h1 {
+header {
     text-align: center;
-    color: #333;
+    margin-bottom: 25px;
+    background-color: #1e293b;
+    color: #ffffff;
+    padding: 15px;
+    border-radius: 8px;
 }
 
 .contenedor-principal {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 20px;
-    flex-wrap: wrap;
 }
 
 .panel {
-    background: white;
+    background: #ffffff;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    flex: 1;
-    min-width: 280px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.ancho-completo {
-    flex: 100%;
+.panel h2 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #1e293b;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 8px;
 }
 
-.grid-botones {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
-}
-
-.btn-producto {
-    padding: 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn-producto:hover {
-    background-color: #0056b3;
-}
-
-.btn-confirmar {
-    background-color: #28a745;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    width: 100%;
-    margin-top: 10px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.btn-confirmar:hover {
-    background-color: #218838;
-}
-
-.btn-cancelar {
-    background-color: #dc3545;
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    width: 100%;
-    margin-top: 5px;
-    cursor: pointer;
-}
-
-.btn-cancelar:hover {
-    background-color: #c82333;
-}
-
-.btn-eliminar-sm {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    padding: 3px 7px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-.item-admin {
+.cabecera-seccion {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
-    padding: 5px 0;
-    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
 }
 
-.campo, .campo-domicilio {
-    margin-bottom: 12px;
+.cabecera-seccion h2 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* GRID DE PRODUCTOS E IMÁGENES */
+.grid-productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+}
+
+.tarjeta-producto {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
-    gap: 5px;
 }
 
-.campo input, .campo-domicilio select {
-    padding: 8px;
-    border: 1px solid #ccc;
+.tarjeta-producto:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.tarjeta-producto img {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+}
+
+.info-producto {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+}
+
+.info-producto strong {
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.info-producto span {
+    color: #2563eb;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+/* TABLAS */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+}
+
+th {
+    background-color: #f1f5f9;
+    color: #475569;
+}
+
+/* FORMULARIOS Y CAMPOS */
+.campo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+}
+
+.campo label {
+    font-size: 13px;
+    margin-bottom: 5px;
+    color: #475569;
+}
+
+.campo input, .campo select {
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
     border-radius: 4px;
     font-size: 14px;
 }
 
-/* FORMATO ESTILO FACTURA */
-.grid-facturas {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
+/* BOTONES */
+.btn-confirmar {
+    width: 100%;
+    padding: 10px;
+    background-color: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-confirmar:hover {
+    background-color: #15803d;
+}
+
+.btn-eliminar {
+    padding: 6px 12px;
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.btn-eliminar:hover {
+    background-color: #b91c1c;
+}
+
+.btn-quitar {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.resumen-pedido {
     margin-top: 15px;
-}
-
-.factura-card {
-    background: #fff;
-    border: 1px dashed #777;
-    padding: 15px;
-    font-family: 'Courier New', Courier, monospace;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
-}
-
-.factura-card h4 {
-    margin: 0 0 10px 0;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
-}
-
-.factura-card ul {
-    list-style: none;
-    padding: 0;
-    margin: 5px 0;
-}
-
-.factura-card li {
-    font-size: 13px;
-    margin-bottom: 3px;
-}
-
-.resumen-totales p {
-    margin: 3px 0;
-    font-size: 14px;
-}
-
-.btn-pila {
-    width: auto;
-    display: inline-block;
-    padding: 5px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

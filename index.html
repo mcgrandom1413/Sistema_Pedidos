@@ -7,58 +7,77 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
+    <!-- 1. CAMBIO DE TÍTULO PRINCIPAL -->
     <header>
-        <h1>Sistema de Pedidos - Comidas Rápidas</h1>
+        <h1>Mi Negocio - Comidas Rápidas</h1>
     </header>
 
     <main class="contenedor-principal">
-        <!-- SECCIÓN 1: MENÚ PARA PEDIR -->
+
+        <!-- SECCIÓN 1: CATÁLOGO / MENÚ -->
         <section class="panel">
-            <h2>1. Seleccionar Productos</h2>
-            <div id="grid-productos" class="grid-botones"></div>
+            <h2>1. Menú de Productos</h2>
+            <div id="grid-productos" class="grid-productos">
+                <!-- Los productos con imagen se cargan dinámicamente desde JS -->
+            </div>
         </section>
 
         <!-- SECCIÓN 2: DETALLE DEL PEDIDO Y FACTURA -->
         <section class="panel">
             <h2>2. Pedido Actual</h2>
-            <ul id="lista-pedido"></ul>
-            
-            <div class="campo-domicilio">
-                <label for="costo-domicilio">Coste de Domicilio:</label>
-                <select id="costo-domicilio" onchange="actualizarVistaPedido()">
-                    <option value="0">Sin Domicilio ($0)</option>
-                    <option value="5000">$5.000</option>
-                    <option value="6000">$6.000</option>
-                    <option value="7000">$7.000</option>
-                    <option value="8000">$8.000</option>
-                    <option value="9000">$9.000</option>
-                    <option value="10000">$10.000</option>
-                    <option value="11000">$11.000</option>
-                    <option value="12000">$12.000</option>
-                    <option value="13000">$13.000</option>
-                    <option value="14000">$14.000</option>
-                    <option value="15000">$15.000</option>
-                </select>
-            </div>
+            <table class="tabla-pedido">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Precio</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="lista-pedido">
+                    <!-- Filas del pedido actual -->
+                </tbody>
+            </table>
 
-            <hr>
-            <div class="resumen-totales">
-                <p>Subtotal: $<span id="subtotal-pagar">0</span></p>
-                <p>Domicilio: $<span id="valor-domicilio">0</span></p>
-                <h3>Total a Pagar: $<span id="total-pagar">0</span></h3>
+            <div class="resumen-pedido">
+                <h3>Total: $<span id="total-pedido">0</span></h3>
+                <div class="campo">
+                    <label for="metodo-pago">Método de Pago:</label>
+                    <select id="metodo-pago">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Nequi/Daviplata">Transferencia (Nequi/Daviplata)</option>
+                        <option value="Tarjeta">Tarjeta Débito/Crédito</option>
+                    </select>
+                </div>
+                <button class="btn-confirmar" onclick="finalizarVenta()">Cobrar y Generar Factura</button>
             </div>
-            
-            <button class="btn-confirmar" onclick="confirmarPedido()">Generar y Guardar Factura</button>
-            <button class="btn-cancelar" onclick="limpiarPedido()">Limpiar Pedido</button>
         </section>
 
-        <!-- SECCIÓN 3: CONTROL DE INVENTARIO Y ELIMINACIÓN -->
+        <!-- SECCIÓN 3: HISTORIAL DE FACTURAS -->
         <section class="panel">
-            <h2>3. Control de Disponibilidad / Eliminar</h2>
-            <div id="lista-admin"></div>
+            <div class="cabecera-seccion">
+                <h2>3. Historial de Facturas</h2>
+                <!-- BOTÓN CORREGIDO PARA BORRAR FACTURAS -->
+                <button class="btn-eliminar" onclick="borrarFacturas()">Borrar Facturas</button>
+            </div>
+
+            <table class="tabla-facturas">
+                <thead>
+                    <tr>
+                        <th># Factura</th>
+                        <th>Fecha</th>
+                        <th>Método</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-facturas">
+                    <!-- Se listan las facturas generadas -->
+                </tbody>
+            </table>
         </section>
 
-        <!-- SECCIÓN 4: REGISTRAR NUEVOS PLATOS/BEBIDAS -->
+        <!-- SECCIÓN 4: CREACIÓN DE PRODUCTOS -->
         <section class="panel">
             <h2>4. Agregar Nuevo Producto</h2>
             <form id="form-nuevo-producto" onsubmit="crearProducto(event)">
@@ -70,16 +89,15 @@
                     <label for="precio">Precio ($):</label>
                     <input type="number" id="precio" placeholder="Ej: 15000" min="1" required>
                 </div>
+                <!-- CAMPO NUEVO PARA AGREGAR IMAGEN -->
+                <div class="campo">
+                    <label for="imagen">URL de la imagen (Opcional):</label>
+                    <input type="url" id="imagen" placeholder="https://ejemplo.com/imagen.jpg">
+                </div>
                 <button type="submit" class="btn-confirmar">Guardar Producto</button>
             </form>
         </section>
 
-        <!-- SECCIÓN 5: HISTORIAL DE FACTURAS GUARDADAS -->
-        <section class="panel ancho-completo">
-            <h2>5. Historial de Facturas (Guardadas por 30 Días)</h2>
-            <button class="btn-cancelar btn-pila" onclick="limpiarFacturasExpiradas()">Limpiar Viejas</button>
-            <div id="historial-facturas" class="grid-facturas"></div>
-        </section>
     </main>
 
     <script src="app.js"></script>

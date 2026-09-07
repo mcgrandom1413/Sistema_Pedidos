@@ -1,199 +1,203 @@
-// Catálogo predeterminado inicial
+// --- PRODUCTOS INICIALES CON IMÁGENES DE MUESTRA ---
 const productosIniciales = [
-    { id: 1, nombre: "Hamburguesa", precio: 15000, disponible: true },
-    { id: 2, nombre: "Perro Caliente", precio: 12000, disponible: true },
-    { id: 3, nombre: "Papas Fritas", precio: 6000, disponible: true },
-    { id: 4, nombre: "Gaseosa", precio: 4000, disponible: true }
+    { id: 1, nombre: "Hamburguesa", precio: 15000, disponible: true, imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300" },
+    { id: 2, nombre: "Perro Caliente", precio: 12000, disponible: true, imagen: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?w=300" },
+    { id: 3, nombre: "Papas Fritas", precio: 6000, disponible: true, imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300" },
+    { id: 4, nombre: "Gaseosa", precio: 4000, disponible: true, imagen: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" }
 ];
 
+// Estado global en memoria y lectura de localStorage
 let productos = JSON.parse(localStorage.getItem("inventario")) || productosIniciales;
-let facturas = JSON.parse(localStorage.getItem("historial_facturas")) || [];
 let pedidoActual = [];
+let historialFacturas = JSON.parse(localStorage.getItem("historialFacturas")) || [];
 
-function guardarInventario() {
-    localStorage.setItem("inventario", JSON.stringify(productos));
-}
+// --- AL CARGAR LA PÁGINA ---
+document.addEventListener("DOMContentLoaded", () => {
+    cargarMenu();
+    actualizarVistaPedido();
+    cargarHistorial();
+});
 
-function guardarFacturas() {
-    localStorage.setItem("historial_facturas", JSON.stringify(facturas));
-}
-
-// 1. Mostrar menú
+// 1. CARGAR EL MENÚ DE PRODUCTOS (CON IMÁGENES)
 function cargarMenu() {
     const contenedor = document.getElementById("grid-productos");
+    if (!contenedor) return;
+
     contenedor.innerHTML = "";
 
     productos.forEach(prod => {
         if (prod.disponible) {
-            const btn = document.createElement("button");
-            btn.className = "btn-producto";
-            btn.innerText = `${prod.nombre}\n$${prod.precio}`;
-            btn.onclick = () => agregarAlPedido(prod);
-            contenedor.appendChild(btn);
+            const card = document.createElement("div");
+            card.className = "tarjeta-producto";
+            card.onclick = () => agregarAlPedido(prod);
+
+            // Imagen por defecto si no ingresan enlace
+            const urlImagen = prod.imagen && prod.imagen.trim() !== "" 
+                ? prod.imagen 
+                : "https://via.placeholder.com/150?text=Comida";
+
+            card.innerHTML = `
+                <img src="${urlImagen}" alt="${prod.nombre}">
+                <div class="info-producto">
+                    <strong>${prod.nombre}</strong>
+                    <span>$${prod.precio.toLocaleString()}</span>
+                </div>
+            `;
+            contenedor.appendChild(card);
         }
     });
 }
 
-function agregarAlPedido(prod) {
-    pedidoActual.push(prod);
+// 2. AGREGAR PRODUCTO AL PEDIDO
+function agregarAlPedido(producto) {
+    const existe = pedidoActual.find(item => item.id === producto.id);
+    if (existe) {
+        existe.cantidad += 1;
+    } else {
+        pedidoActual.push({
+            id: producto.id,
+            nombre: producto.nombre,
+            precio: producto.precio,
+            cantidad: 1
+        });
+    }
     actualizarVistaPedido();
 }
 
+// 3. MOSTRAR TABLA DE PEDIDO ACTUAL Y TOTAL
 function actualizarVistaPedido() {
-    const lista = document.getElementById("lista-pedido");
-    const subtotalSpan = document.getElementById("subtotal-pagar");
-    const domicilioSpan = document.getElementById("valor-domicilio");
-    const totalSpan = document.getElementById("total-pagar");
-    const costoDomicilio = parseFloat(document.getElementById("costo-domicilio").value) || 0;
+    const tbody = document.getElementById("lista-pedido");
+    const totalSpan = document.getElementById("total-pedido");
+    if (!tbody || !totalSpan) return;
 
-    lista.innerHTML = "";
+    tbody.innerHTML = "";
+    let total = 0;
 
-    let subtotal = 0;
-    pedidoActual.forEach((item) => {
-        subtotal += item.precio;
-        const li = document.createElement("li");
-        li.innerText = `${item.nombre} - $${item.precio}`;
-        lista.appendChild(li);
+    pedidoActual.forEach((item, index) => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>${item.nombre}</td>
+            <td>${item.cantidad}</td>
+            <td>$${subtotal.toLocaleString()}</td>
+            <td>
+                <button class="btn-quitar" onclick="quitarDelPedido(${index})">X</button>
+            </td>
+        `;
+        tbody.appendChild(fila);
     });
 
-    const total = subtotal + costoDomicilio;
-
-    subtotalSpan.innerText = subtotal;
-    domicilioSpan.innerText = costoDomicilio;
-    totalSpan.innerText = total;
+    totalSpan.textContent = total.toLocaleString();
 }
 
-function limpiarPedido() {
-    pedidoActual = [];
-    document.getElementById("costo-domicilio").value = "0";
+function quitarDelPedido(index) {
+    pedidoActual.splice(index, 1);
     actualizarVistaPedido();
 }
 
-// 2. Confirmar y guardar la factura (Guarda fecha para controlar tiempo)
-function confirmarPedido() {
-    if (pedidoActual.length === 0) return alert("El pedido está vacío.");
+// 4. COBRAR Y GENERAR FACTURA
+function finalizarVenta() {
+    if (pedidoActual.length === 0) {
+        alert("El pedido está vacío.");
+        return;
+    }
 
-    const costoDomicilio = parseFloat(document.getElementById("costo-domicilio").value) || 0;
-    let subtotal = 0;
-    pedidoActual.forEach(item => subtotal += item.precio);
+    const metodoPago = document.getElementById("metodo-pago").value;
+    const totalVenta = pedidoActual.reduce((acc, item) => acc + (item.precio * item.cantidad), 0);
 
     const nuevaFactura = {
-        id: "FAC-" + Date.now().toString().slice(-5),
-        fecha: new Date().toISOString(),
-        items: [...pedidoActual],
-        subtotal: subtotal,
-        domicilio: costoDomicilio,
-        total: subtotal + costoDomicilio
+        id: Date.now(),
+        fecha: new Date().toLocaleString(),
+        metodoPago: metodoPago,
+        total: totalVenta,
+        detalles: [...pedidoActual]
     };
 
-    facturas.unshift(nuevaFactura); // Agregar al inicio
-    guardarFacturas();
-    cargarFacturas();
+    historialFacturas.push(nuevaFactura);
+    localStorage.setItem("historialFacturas", JSON.stringify(historialFacturas));
 
-    alert(`¡Factura ${nuevaFactura.id} registrada con éxito!`);
-    limpiarPedido();
+    // Reiniciar pedido y refrescar vista
+    pedidoActual = [];
+    actualizarVistaPedido();
+    cargarHistorial();
+
+    alert("¡Venta registrada con éxito!");
 }
 
-// 3. Panel de administración y eliminación de comidas
-function cargarAdmin() {
-    const contenedorAdmin = document.getElementById("lista-admin");
-    contenedorAdmin.innerHTML = "";
+// 5. CARGAR HISTORIAL DE FACTURAS EN LA TABLA
+function cargarHistorial() {
+    const tabla = document.getElementById("tabla-facturas");
+    if (!tabla) return;
 
-    productos.forEach(prod => {
-        const div = document.createElement("div");
-        div.className = "item-admin";
-        div.innerHTML = `
-            <span><strong>${prod.nombre}</strong> ($${prod.precio})</span>
-            <div>
-                <label>
-                    <input type="checkbox" ${prod.disponible ? "checked" : ""} onchange="cambiarEstado(${prod.id})">
-                    Disponible
-                </label>
-                <button class="btn-eliminar-sm" onclick="eliminarProducto(${prod.id})">🗑️ Borrar</button>
-            </div>
+    tabla.innerHTML = "";
+
+    if (historialFacturas.length === 0) {
+        tabla.innerHTML = `<tr><td colspan="4" style="text-align:center;">No hay facturas registradas.</td></tr>`;
+        return;
+    }
+
+    historialFacturas.forEach((factura, index) => {
+        const fila = document.createElement("tr");
+        fila.innerHTML = `
+            <td>#${factura.id.toString().slice(-4)}</td>
+            <td>${factura.fecha}</td>
+            <td>${factura.metodoPago}</td>
+            <td>$${factura.total.toLocaleString()}</td>
         `;
-        contenedorAdmin.appendChild(div);
+        tabla.appendChild(fila);
     });
 }
 
-function cambiarEstado(id) {
-    productos = productos.map(p => p.id === id ? { ...p, disponible: !p.disponible } : p);
-    guardarInventario();
-    cargarMenu();
-}
+// 6. FUNCIÓN CORREGIDA: BORRAR FACTURAS
+function borrarFacturas() {
+    if (historialFacturas.length === 0) {
+        alert("No hay facturas para borrar.");
+        return;
+    }
 
-function eliminarProducto(id) {
-    if (confirm("¿Estás seguro de que deseas eliminar este producto definitivamente?")) {
-        productos = productos.filter(p => p.id !== id);
-        guardarInventario();
-        cargarMenu();
-        cargarAdmin();
+    const confirmar = confirm("¿Estás seguro de que deseas borrar TODAS las facturas del historial?");
+    
+    if (confirmar) {
+        // Vaciar el arreglo en JavaScript
+        historialFacturas = [];
+
+        // Vaciar la clave del almacenamiento local
+        localStorage.removeItem("historialFacturas");
+
+        // Volver a renderizar la tabla para mostrarla vacía
+        cargarHistorial();
+
+        alert("Se ha borrado el historial de facturas.");
     }
 }
 
-// 4. Crear producto
+// 7. CREAR NUEVO PRODUCTO (CON URL DE IMAGEN)
 function crearProducto(event) {
     event.preventDefault();
 
     const nombreInput = document.getElementById("nombre");
     const precioInput = document.getElementById("precio");
+    const imagenInput = document.getElementById("imagen");
 
     const nuevoProducto = {
         id: Date.now(),
         nombre: nombreInput.value.trim(),
         precio: parseFloat(precioInput.value),
-        disponible: true
+        disponible: true,
+        imagen: imagenInput.value.trim()
     };
 
     productos.push(nuevoProducto);
-    guardarInventario();
+    localStorage.setItem("inventario", JSON.stringify(productos));
 
     cargarMenu();
-    cargarAdmin();
 
+    // Limpiar formulario
     nombreInput.value = "";
     precioInput.value = "";
+    imagenInput.value = "";
+
+    alert("Producto agregado correctamente.");
 }
-
-// 5. Visualizar historial de facturas
-function cargarFacturas() {
-    const contenedorFacturas = document.getElementById("historial-facturas");
-    contenedorFacturas.innerHTML = "";
-
-    facturas.forEach(f => {
-        const fechaFormateada = new Date(f.fecha).toLocaleString();
-        const card = document.createElement("div");
-        card.className = "factura-card";
-
-        let listaHTML = "<ul>";
-        f.items.forEach(item => {
-            listaHTML += `<li>• ${item.nombre}: $${item.precio}</li>`;
-        });
-        listaHTML += "</ul>";
-
-        card.innerHTML = `
-            <h4>${f.id}</h4>
-            <small>${fechaFormateada}</small>
-            ${listaHTML}
-            <hr>
-            <p>Subtotal: $${f.subtotal}</p>
-            <p>Domicilio: $${f.domicilio}</p>
-            <strong>TOTAL: $${f.total}</strong>
-        `;
-        contenedorFacturas.appendChild(card);
-    });
-}
-
-// Limpiar automático de facturas de más de 30 días
-function limpiarFacturasExpiradas() {
-    const limite30Dias = Date.now() - (30 * 24 * 60 * 60 * 1000);
-    facturas = facturas.filter(f => new Date(f.fecha).getTime() > limite30Dias);
-    guardarFacturas();
-    cargarFacturas();
-    alert("Se han limpiado las facturas con más de 30 días de antigüedad.");
-}
-
-// Inicialización
-cargarMenu();
-cargarAdmin();
-cargarFacturas();
