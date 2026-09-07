@@ -1,24 +1,20 @@
-// --- PRODUCTOS INICIALES CON IMÁGENES DE MUESTRA ---
 const productosIniciales = [
-    { id: 1, nombre: "Hamburguesa", precio: 15000, disponible: true, imagen: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300" },
-    { id: 2, nombre: "Perro Caliente", precio: 12000, disponible: true, imagen: "https://images.unsplash.com/photo-1619740455993-9e612b1af08a?w=300" },
-    { id: 3, nombre: "Papas Fritas", precio: 6000, disponible: true, imagen: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=300" },
-    { id: 4, nombre: "Gaseosa", precio: 4000, disponible: true, imagen: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=300" }
+    { id: 1, nombre: "Hamburguesa", precio: 15000, disponible: true, imagen: "" },
+    { id: 2, nombre: "Perro Caliente", precio: 12000, disponible: true, imagen: "" },
+    { id: 3, nombre: "Papas Fritas", precio: 6000, disponible: true, imagen: "" },
+    { id: 4, nombre: "Gaseosa", precio: 4000, disponible: true, imagen: "" }
 ];
 
-// Estado global en memoria y lectura de localStorage
 let productos = JSON.parse(localStorage.getItem("inventario")) || productosIniciales;
 let pedidoActual = [];
 let historialFacturas = JSON.parse(localStorage.getItem("historialFacturas")) || [];
 
-// --- AL CARGAR LA PÁGINA ---
 document.addEventListener("DOMContentLoaded", () => {
     cargarMenu();
     actualizarVistaPedido();
     cargarHistorial();
 });
 
-// 1. CARGAR EL MENÚ DE PRODUCTOS (CON IMÁGENES)
 function cargarMenu() {
     const contenedor = document.getElementById("grid-productos");
     if (!contenedor) return;
@@ -27,30 +23,32 @@ function cargarMenu() {
 
     productos.forEach(prod => {
         if (prod.disponible) {
-            const card = document.createElement("div");
-            card.className = "tarjeta-producto";
-            card.onclick = () => agregarAlPedido(prod);
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "tarjeta-producto";
+            btn.onclick = () => agregarAlPedido(prod.id);
 
-            // Imagen por defecto si no ingresan enlace
-            const urlImagen = prod.imagen && prod.imagen.trim() !== "" 
-                ? prod.imagen 
-                : "https://via.placeholder.com/150?text=Comida";
+            let contenidoImagen = prod.imagen && prod.imagen.trim() !== "" 
+                ? `<img src="${prod.imagen}" alt="${prod.nombre}" onerror="this.style.display='none'">` 
+                : "";
 
-            card.innerHTML = `
-                <img src="${urlImagen}" alt="${prod.nombre}">
+            btn.innerHTML = `
+                ${contenidoImagen}
                 <div class="info-producto">
                     <strong>${prod.nombre}</strong>
                     <span>$${prod.precio.toLocaleString()}</span>
                 </div>
             `;
-            contenedor.appendChild(card);
+            contenedor.appendChild(btn);
         }
     });
 }
 
-// 2. AGREGAR PRODUCTO AL PEDIDO
-function agregarAlPedido(producto) {
-    const existe = pedidoActual.find(item => item.id === producto.id);
+function agregarAlPedido(idProducto) {
+    const producto = productos.find(p => p.id === idProducto);
+    if (!producto) return;
+
+    const existe = pedidoActual.find(item => item.id === idProducto);
     if (existe) {
         existe.cantidad += 1;
     } else {
@@ -64,7 +62,6 @@ function agregarAlPedido(producto) {
     actualizarVistaPedido();
 }
 
-// 3. MOSTRAR TABLA DE PEDIDO ACTUAL Y TOTAL
 function actualizarVistaPedido() {
     const tbody = document.getElementById("lista-pedido");
     const totalSpan = document.getElementById("total-pedido");
@@ -83,7 +80,7 @@ function actualizarVistaPedido() {
             <td>${item.cantidad}</td>
             <td>$${subtotal.toLocaleString()}</td>
             <td>
-                <button class="btn-quitar" onclick="quitarDelPedido(${index})">X</button>
+                <button type="button" class="btn-quitar" onclick="quitarDelPedido(${index})">X</button>
             </td>
         `;
         tbody.appendChild(fila);
@@ -97,7 +94,6 @@ function quitarDelPedido(index) {
     actualizarVistaPedido();
 }
 
-// 4. COBRAR Y GENERAR FACTURA
 function finalizarVenta() {
     if (pedidoActual.length === 0) {
         alert("El pedido está vacío.");
@@ -111,14 +107,12 @@ function finalizarVenta() {
         id: Date.now(),
         fecha: new Date().toLocaleString(),
         metodoPago: metodoPago,
-        total: totalVenta,
-        detalles: [...pedidoActual]
+        total: totalVenta
     };
 
     historialFacturas.push(nuevaFactura);
     localStorage.setItem("historialFacturas", JSON.stringify(historialFacturas));
 
-    // Reiniciar pedido y refrescar vista
     pedidoActual = [];
     actualizarVistaPedido();
     cargarHistorial();
@@ -126,7 +120,6 @@ function finalizarVenta() {
     alert("¡Venta registrada con éxito!");
 }
 
-// 5. CARGAR HISTORIAL DE FACTURAS EN LA TABLA
 function cargarHistorial() {
     const tabla = document.getElementById("tabla-facturas");
     if (!tabla) return;
@@ -138,7 +131,7 @@ function cargarHistorial() {
         return;
     }
 
-    historialFacturas.forEach((factura, index) => {
+    historialFacturas.forEach((factura) => {
         const fila = document.createElement("tr");
         fila.innerHTML = `
             <td>#${factura.id.toString().slice(-4)}</td>
@@ -150,30 +143,20 @@ function cargarHistorial() {
     });
 }
 
-// 6. FUNCIÓN CORREGIDA: BORRAR FACTURAS
 function borrarFacturas() {
     if (historialFacturas.length === 0) {
         alert("No hay facturas para borrar.");
         return;
     }
 
-    const confirmar = confirm("¿Estás seguro de que deseas borrar TODAS las facturas del historial?");
-    
-    if (confirmar) {
-        // Vaciar el arreglo en JavaScript
+    if (confirm("¿Estás seguro de que deseas borrar TODAS las facturas del historial?")) {
         historialFacturas = [];
-
-        // Vaciar la clave del almacenamiento local
         localStorage.removeItem("historialFacturas");
-
-        // Volver a renderizar la tabla para mostrarla vacía
         cargarHistorial();
-
-        alert("Se ha borrado el historial de facturas.");
+        alert("Historial de facturas borrado.");
     }
 }
 
-// 7. CREAR NUEVO PRODUCTO (CON URL DE IMAGEN)
 function crearProducto(event) {
     event.preventDefault();
 
@@ -194,7 +177,6 @@ function crearProducto(event) {
 
     cargarMenu();
 
-    // Limpiar formulario
     nombreInput.value = "";
     precioInput.value = "";
     imagenInput.value = "";

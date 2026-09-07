@@ -8,22 +8,19 @@
 </head>
 <body>
 
-    <!-- 1. CAMBIO DE TÍTULO PRINCIPAL -->
     <header>
         <h1>Mi Negocio - Comidas Rápidas</h1>
     </header>
 
     <main class="contenedor-principal">
 
-        <!-- SECCIÓN 1: CATÁLOGO / MENÚ -->
+        <!-- 1. MENÚ DE PRODUCTOS -->
         <section class="panel">
             <h2>1. Menú de Productos</h2>
-            <div id="grid-productos" class="grid-productos">
-                <!-- Los productos con imagen se cargan dinámicamente desde JS -->
-            </div>
+            <div id="grid-productos" class="grid-productos"></div>
         </section>
 
-        <!-- SECCIÓN 2: DETALLE DEL PEDIDO Y FACTURA -->
+        <!-- 2. PEDIDO ACTUAL -->
         <section class="panel">
             <h2>2. Pedido Actual</h2>
             <table class="tabla-pedido">
@@ -35,9 +32,7 @@
                         <th>Acción</th>
                     </tr>
                 </thead>
-                <tbody id="lista-pedido">
-                    <!-- Filas del pedido actual -->
-                </tbody>
+                <tbody id="lista-pedido"></tbody>
             </table>
 
             <div class="resumen-pedido">
@@ -50,16 +45,15 @@
                         <option value="Tarjeta">Tarjeta Débito/Crédito</option>
                     </select>
                 </div>
-                <button class="btn-confirmar" onclick="finalizarVenta()">Cobrar y Generar Factura</button>
+                <button type="button" class="btn-confirmar" onclick="finalizarVenta()">Cobrar y Generar Factura</button>
             </div>
         </section>
 
-        <!-- SECCIÓN 3: HISTORIAL DE FACTURAS -->
+        <!-- 3. HISTORIAL DE FACTURAS -->
         <section class="panel">
             <div class="cabecera-seccion">
                 <h2>3. Historial de Facturas</h2>
-                <!-- BOTÓN CORREGIDO PARA BORRAR FACTURAS -->
-                <button class="btn-eliminar" onclick="borrarFacturas()">Borrar Facturas</button>
+                <button type="button" class="btn-eliminar" onclick="borrarFacturas()">Borrar Facturas</button>
             </div>
 
             <table class="tabla-facturas">
@@ -71,13 +65,11 @@
                         <th>Total</th>
                     </tr>
                 </thead>
-                <tbody id="tabla-facturas">
-                    <!-- Se listan las facturas generadas -->
-                </tbody>
+                <tbody id="tabla-facturas"></tbody>
             </table>
         </section>
 
-        <!-- SECCIÓN 4: CREACIÓN DE PRODUCTOS -->
+        <!-- 4. AGREGAR PRODUCTO -->
         <section class="panel">
             <h2>4. Agregar Nuevo Producto</h2>
             <form id="form-nuevo-producto" onsubmit="crearProducto(event)">
@@ -89,7 +81,6 @@
                     <label for="precio">Precio ($):</label>
                     <input type="number" id="precio" placeholder="Ej: 15000" min="1" required>
                 </div>
-                <!-- CAMPO NUEVO PARA AGREGAR IMAGEN -->
                 <div class="campo">
                     <label for="imagen">URL de la imagen (Opcional):</label>
                     <input type="url" id="imagen" placeholder="https://ejemplo.com/imagen.jpg">

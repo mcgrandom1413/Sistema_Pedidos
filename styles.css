@@ -22,7 +22,7 @@ header {
 
 .contenedor-principal {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
 
@@ -54,52 +54,52 @@ header {
     padding-bottom: 0;
 }
 
-/* GRID DE PRODUCTOS E IMÁGENES */
+/* MENÚ Y BOTONES DE PRODUCTO */
 .grid-productos {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
 }
 
 .tarjeta-producto {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    overflow: hidden;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 8px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
 }
 
 .tarjeta-producto:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    background-color: #0056b3;
 }
 
 .tarjeta-producto img {
     width: 100%;
-    height: 90px;
+    height: 70px;
     object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 6px;
 }
 
 .info-producto {
-    padding: 10px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    text-align: center;
 }
 
 .info-producto strong {
-    font-size: 14px;
-    color: #0f172a;
+    font-size: 13px;
 }
 
 .info-producto span {
-    color: #2563eb;
-    font-weight: bold;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 /* TABLAS */
@@ -110,7 +110,7 @@ table {
 }
 
 th, td {
-    padding: 10px;
+    padding: 8px;
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
     font-size: 14px;
@@ -121,7 +121,7 @@ th {
     color: #475569;
 }
 
-/* FORMULARIOS Y CAMPOS */
+/* FORMULARIOS */
 .campo {
     display: flex;
     flex-direction: column;
@@ -135,49 +135,47 @@ th {
 }
 
 .campo input, .campo select {
-    padding: 8px 10px;
+    padding: 8px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
     font-size: 14px;
 }
 
-/* BOTONES */
+/* BOTONES GENERALES */
 .btn-confirmar {
     width: 100%;
     padding: 10px;
-    background-color: #16a34a;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 5px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.2s;
 }
 
 .btn-confirmar:hover {
-    background-color: #15803d;
+    background-color: #218838;
 }
 
 .btn-eliminar {
     padding: 6px 12px;
-    background-color: #dc2626;
+    background-color: #dc3545;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
-    font-weight: bold;
 }
 
 .btn-eliminar:hover {
-    background-color: #b91c1c;
+    background-color: #c82333;
 }
 
 .btn-quitar {
-    background-color: #ef4444;
+    background-color: #dc3545;
     color: white;
     border: none;
-    padding: 2px 8px;
+    padding: 2px 6px;
     border-radius: 3px;
     cursor: pointer;
 }
