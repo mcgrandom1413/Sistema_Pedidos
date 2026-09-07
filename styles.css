@@ -54,7 +54,6 @@ header {
     padding-bottom: 0;
 }
 
-/* MENÚ Y BOTONES DE PRODUCTO */
 .grid-productos {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -102,7 +101,6 @@ header {
     font-size: 12px;
 }
 
-/* TABLAS */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -121,7 +119,6 @@ th {
     color: #475569;
 }
 
-/* FORMULARIOS Y DOMICILIO */
 .campo {
     display: flex;
     flex-direction: column;
@@ -149,7 +146,6 @@ th {
     font-size: 14px;
 }
 
-/* BOTONES GENERALES */
 .btn-confirmar {
     width: 100%;
     padding: 10px;

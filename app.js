@@ -2,7 +2,7 @@ const productosIniciales = [
     { id: 1, nombre: "Hamburguesa", precio: 15000, disponible: true, imagen: "" },
     { id: 2, nombre: "Perro Caliente", precio: 12000, disponible: true, imagen: "" },
     { id: 3, nombre: "Papas Fritas", precio: 6000, disponible: true, imagen: "" },
-    { id: 4, nombre: "Gaseosa", precio: 4000, disponible: true, imagen: "" }
+    { id: 4, nombre: "Gaseosa", precio: 5000, disponible: true, imagen: "" }
 ];
 
 let productos = JSON.parse(localStorage.getItem("inventario")) || productosIniciales;
@@ -98,7 +98,6 @@ function actualizarVistaPedido() {
         tbody.appendChild(fila);
     });
 
-    // Calcular recargo de domicilio si aplica
     let costoDomicilio = 0;
     const tipoEntrega = document.getElementById("tipo-entrega").value;
     if (tipoEntrega === "Domicilio") {
@@ -151,7 +150,6 @@ function finalizarVenta() {
     historialFacturas.push(nuevaFactura);
     localStorage.setItem("historialFacturas", JSON.stringify(historialFacturas));
 
-    // Reiniciar campos del pedido
     pedidoActual = [];
     document.getElementById("direccion-domicilio").value = "";
     document.getElementById("tipo-entrega").value = "Local";
@@ -210,10 +208,18 @@ function crearProducto(event) {
     const precioInput = document.getElementById("precio");
     const imagenInput = document.getElementById("imagen");
 
+    const precio = parseFloat(precioInput.value);
+
+    // Validación estricta del rango $5.000 - $15.000
+    if (precio < 5000 || precio > 15000) {
+        alert("El precio debe estar entre $5,000 y $15,000 pesos.");
+        return;
+    }
+
     const nuevoProducto = {
         id: Date.now(),
         nombre: nombreInput.value.trim(),
-        precio: parseFloat(precioInput.value),
+        precio: precio,
         disponible: true,
         imagen: imagenInput.value.trim()
     };

@@ -44,7 +44,6 @@
                     </select>
                 </div>
 
-                <!-- SECCIÓN DE DATOS DE DOMICILIO (OCULTA POR DEFECTO) -->
                 <div id="seccion-domicilio" class="campos-domicilio" style="display: none;">
                     <div class="campo">
                         <label for="direccion-domicilio">Dirección de entrega:</label>
@@ -100,8 +99,8 @@
                     <input type="text" id="nombre" placeholder="Ej: Salchipapa" required>
                 </div>
                 <div class="campo">
-                    <label for="precio">Precio ($):</label>
-                    <input type="number" id="precio" placeholder="Ej: 15000" min="1" required>
+                    <label for="precio">Precio ($5.000 - $15.000):</label>
+                    <input type="number" id="precio" placeholder="Ej: 15000" min="5000" max="15000" required>
                 </div>
                 <div class="campo">
                     <label for="imagen">URL de la imagen (Opcional):</label>
